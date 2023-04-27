@@ -96,3 +96,42 @@ app.get("/districts/:districtId/", async (request, response) => {
   const state = await db.get(stateQuery);
   response.send(state);
 });
+//API 5 Delete
+app.delete("/districts/:districtId/", async (request, response) => {
+  const { districtId } = request.params;
+  const deleteDistrictQuery = `
+    DELETE FROM
+      district
+    WHERE
+      district_id = ${districtId};`;
+  await db.run(deleteDistrictQuery);
+  response.send("District Removed");
+});
+//API 6 Update the resources
+app.put("/districts/:districtId/", async (request, response) => {
+  const { districtId } = request.params;
+  const updatedistrictsDetails = request.body;
+  const {
+    districtName,
+    stateId,
+    cases,
+    cured,
+    active,
+    deaths,
+  } = updatedistrictsDetails;
+  const updateaddDistrictQuery = `
+    update
+      district 
+      set
+       district_name= '${districtName}',
+         state_id=${stateId},
+        cases=${cases},
+        cured=${cured},
+         active=${active},
+         deaths=${deaths}
+         where
+         district_id=${districtId}
+      );`;
+  await db.run(updateaddDistrictQuery);
+  response.send(`District Details Updated`);
+});
